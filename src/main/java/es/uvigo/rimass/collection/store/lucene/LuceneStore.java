@@ -33,13 +33,14 @@ import org.apache.lucene.util.Version;
 public class LuceneStore implements Store {
 
     // Lucene field names
-    private static String FIELD_DOCID = "DOCID";
-    private static String FIELD_TEXT = "TEXT";
-    private static String FIELD_ENTITIES = "ENTITIES";
-    private static String FIELD_LEMMAS = "LEMMAS";
-    private static String FIELD_DEPENDENCES = "DEPENDENCES";
-    private static String FIELD_HEADS = "HEADS";
-    private static String FIELD_MODIFIERS = "MODIFIERS";
+    public static String FIELD_DOCID = "DOCID";
+    public static String FIELD_TEXT = "TEXT";
+    public static String FIELD_ENTITIES = "ENTITIES";
+    public static String FIELD_LEMMAS = "LEMMAS";
+    public static String FIELD_DEPENDENCES = "DEPENDENCES";
+    public static String FIELD_HEADS = "HEADS";
+    public static String FIELD_MODIFIERS = "MODIFIERS";
+    
     private File storeDir;
     private Directory directory;
     private Analyzer analizer;
@@ -103,13 +104,13 @@ public class LuceneStore implements Store {
         doc.add(new Field(LuceneStore.FIELD_DOCID, Long.toString(document.getDocid()), Field.Store.YES, Field.Index.NOT_ANALYZED, Field.TermVector.NO));
         doc.add(new Field(LuceneStore.FIELD_TEXT, document.getTitle() + document.getText(), Field.Store.NO, Field.Index.ANALYZED, Field.TermVector.NO));
         if (lemmas != null) {
-            doc.add(new Field(LuceneStore.FIELD_LEMMAS, arrayToSpacedString(lemmas), Field.Store.NO, Field.Index.ANALYZED, Field.TermVector.NO));
+            doc.add(new Field(LuceneStore.FIELD_LEMMAS, arrayToSpacedString(lemmas), Field.Store.NO, Field.Index.ANALYZED, Field.TermVector.YES));
         }
         if (entities != null) {
-            doc.add(new Field(LuceneStore.FIELD_ENTITIES, arrayToSpacedString(entities), Field.Store.NO, Field.Index.ANALYZED, Field.TermVector.NO));
+            doc.add(new Field(LuceneStore.FIELD_ENTITIES, arrayToSpacedString(entities), Field.Store.NO, Field.Index.ANALYZED, Field.TermVector.YES));
         }
         if (dependences != null) {
-            doc.add(new Field(LuceneStore.FIELD_DEPENDENCES, dependencesToString(dependences), Field.Store.NO, Field.Index.ANALYZED, Field.TermVector.NO));
+            doc.add(new Field(LuceneStore.FIELD_DEPENDENCES, dependencesToString(dependences), Field.Store.NO, Field.Index.ANALYZED, Field.TermVector.YES));
             doc.add(new Field(LuceneStore.FIELD_HEADS, dependenceHeadsToString(dependences), Field.Store.NO, Field.Index.ANALYZED, Field.TermVector.NO));
             doc.add(new Field(LuceneStore.FIELD_MODIFIERS, dependenceModifiersToString(dependences), Field.Store.NO, Field.Index.ANALYZED, Field.TermVector.NO));
         }
