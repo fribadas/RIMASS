@@ -1,0 +1,3 @@
+
+export JARS=/home/ribadas/NetBeansProjects/RIMASS/target/classes:/home/ribadas/.m2/repository/edu/stanford/nlp/stanford-corenlp/1.3.2/stanford-corenlp-1.3.2.jar:/home/ribadas/.m2/repository/xom/xom/1.2.5/xom-1.2.5.jar:/home/ribadas/.m2/repository/xml-apis/xml-apis/1.3.03/xml-apis-1.3.03.jar:/home/ribadas/.m2/repository/xerces/xercesImpl/2.8.0/xercesImpl-2.8.0.jar:/home/ribadas/.m2/repository/xalan/xalan/2.7.0/xalan-2.7.0.jar:/home/ribadas/.m2/repository/joda-time/joda-time/2.0/joda-time-2.0.jar:/home/ribadas/.m2/repository/edu/stanford/nlp/stanford-corenlp/1.3.2/stanford-corenlp-1.3.2-models.jar:/home/ribadas/.m2/repository/org/apache/lucene/lucene-core/3.6.0/lucene-core-3.6.0.jar
+
