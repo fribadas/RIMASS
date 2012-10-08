@@ -21,6 +21,9 @@ import es.uvigo.rimass.thesaurus.Thesaurus;
 
 public class ThesaurusLoader {
 
+	private static final String NEO4JEMBEDDED_GRAPH_DB = "/home/adrian/tmp/medline/store/neo4jembedded/graph.db";
+	private static final String THESAURUS_MESH_XML_LOCATION = "/home/adrian/tmp/thesaurus.MESH.xml";
+
 	private Thesaurus thesaurus;
 
 	BatchInserter inserter;
@@ -34,7 +37,7 @@ public class ThesaurusLoader {
 	public ThesaurusLoader(String file) {
 		thesaurus = new Thesaurus(file);
 		inserter = BatchInserters.inserter(
-				"/home/adrian/tmp/medline/store/neo4jembedded/graph.db");
+				NEO4JEMBEDDED_GRAPH_DB);
 
 		indexProvider = new LuceneBatchInserterIndexProvider(
 				inserter);
@@ -73,7 +76,7 @@ public class ThesaurusLoader {
 
 	public static void main(String[] args) {
 		ThesaurusLoader loader = new ThesaurusLoader(
-				"/home/adrian/tmp/thesaurus.MESH.xml");
+				THESAURUS_MESH_XML_LOCATION);
 		loader.load();
 	}
 
