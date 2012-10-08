@@ -4,6 +4,7 @@ import es.uvigo.rimass.collection.Collection;
 import es.uvigo.rimass.collection.Configuration;
 import es.uvigo.rimass.collection.Store;
 import es.uvigo.rimass.core.*;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;

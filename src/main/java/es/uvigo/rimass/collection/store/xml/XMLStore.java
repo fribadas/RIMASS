@@ -8,6 +8,7 @@ import es.uvigo.rimass.core.DependencesRepresentation;
 import es.uvigo.rimass.core.Document;
 import es.uvigo.rimass.core.Metadata;
 import es.uvigo.rimass.core.SingleTermsRepresentation;
+
 import java.io.File;
 import java.util.logging.Level;
 import java.util.logging.Logger;

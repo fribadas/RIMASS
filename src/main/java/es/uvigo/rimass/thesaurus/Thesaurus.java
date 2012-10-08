@@ -1,7 +1,9 @@
 package es.uvigo.rimass.thesaurus;
 
+import edu.stanford.nlp.io.PrintFile;
 import es.uvigo.rimass.thesaurus.mesh.MESHMetadata;
 import java.io.File;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.util.*;
 import javax.xml.bind.JAXBContext;
@@ -169,7 +171,12 @@ public class Thesaurus {
         }
 
         Thesaurus t = new Thesaurus(args[0]);
-        t.dump(System.out);
+        try {
+			t.dump(new PrintFile(new File("/home/adrian/tmp/thesaurus.output")));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
 
     private static void showUsuage() {
@@ -196,9 +203,9 @@ public class Thesaurus {
         sbLine.append(d.getId());
         sbLine.append(' ');
         sbLine.append(d.getLabel());
-        if (d.getMetadata() != null) {
-            sbLine.append(d.getMetadata().toString());
-        }
+//        if (d.getMetadata() != null) {
+//            sbLine.append(d.getMetadata().toString());
+//        }
 
         out.println(sbLine.toString());
 

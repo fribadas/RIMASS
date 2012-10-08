@@ -57,7 +57,6 @@ public class StanfordDependenceAnalizer implements Analyzer {
     
     public void initialize(Collection collection, Configuration configuration) {
         if (thesaurus != null) {
-            this.thesaurus = thesaurus;
             this.useThesaurusEntities = true;
             this.expandThesaurusParents = true;
             

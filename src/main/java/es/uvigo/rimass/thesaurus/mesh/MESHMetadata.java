@@ -102,7 +102,6 @@ public class MESHMetadata extends DescriptorMetadata implements ContextManager {
         return sb.toString();
     }
 
-    @Override
     public Set<Descriptor> descendantsByContext(String parentContext) {
         Set<Descriptor> result = null;
         if (this.meshContexts != null) {
@@ -119,7 +118,6 @@ public class MESHMetadata extends DescriptorMetadata implements ContextManager {
         return result;
     }
 
-    @Override
     public String currentContext(String parentContext) { // TODO: puede devolver varios¿? (en los hijos de las raices)
         if (this.meshContexts != null) {
             for (MESHContext meshContext : this.meshContexts) {

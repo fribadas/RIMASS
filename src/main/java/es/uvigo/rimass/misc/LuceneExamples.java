@@ -4,30 +4,36 @@
  */
 package es.uvigo.rimass.misc;
 
-import es.uvigo.rimass.collection.store.lucene.LuceneStore;
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.apache.lucene.analysis.Analyzer;
+
 import org.apache.lucene.analysis.KeywordAnalyzer;
-import org.apache.lucene.analysis.PerFieldAnalyzerWrapper;
 import org.apache.lucene.analysis.WhitespaceAnalyzer;
 import org.apache.lucene.analysis.standard.ClassicAnalyzer;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.index.Term;
+import org.apache.lucene.index.TermEnum;
 import org.apache.lucene.index.TermFreqVector;
 import org.apache.lucene.queryParser.QueryParser;
+import org.apache.lucene.search.DocIdSet;
+import org.apache.lucene.search.FieldValueFilter;
+import org.apache.lucene.search.Filter;
+import org.apache.lucene.search.FilteredQuery;
 import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.PrefixQuery;
 import org.apache.lucene.search.Query;
+import org.apache.lucene.search.QueryTermVector;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopDocs;
+import org.apache.lucene.search.highlight.QueryTermExtractor;
+import org.apache.lucene.search.highlight.WeightedTerm;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.SimpleFSDirectory;
 import org.apache.lucene.util.Version;
+
+import es.uvigo.rimass.collection.store.lucene.LuceneStore;
 
 /**
  *
@@ -51,7 +57,7 @@ public class LuceneExamples {
 
     public static void main(String[] args) throws IOException {
 
-        LuceneExamples examples = new LuceneExamples("/tmp/medline/store/lucene");
+        LuceneExamples examples = new LuceneExamples("/home/adrian/tmp/medline/store/lucene");
 
         // Retrieve Lucene document by DOCID 19196247
         examples.retrieveDocument("19196247");
@@ -66,9 +72,9 @@ public class LuceneExamples {
         examples.searchHead("diabetes");
 
         // Retrieve depencendes vector by docid
-        examples.prettyPrintDependencesVector("19196247");
+        examples.prettyPrintDependencesVector("19780719");
 
-
+        examples.prettyPrintDependencesVectorForDep("demonstrate::*::*");
     }
 
     private void initialize() throws IOException {
@@ -129,6 +135,7 @@ public class LuceneExamples {
             dependences = dependences.replace(":", "\\:");
 
             Query query = parserDEPENDENCES.parse(dependences);
+            
             TopDocs hits = this.indexSearcher.search(query, 1000);
             System.out.println("\tfound " + hits.totalHits + " hits");
 
@@ -197,11 +204,51 @@ public class LuceneExamples {
         try {
             Query query = parserDOCID.parse(docid);
             TopDocs hits = this.indexSearcher.search(query, 1);
-            if (hits.totalHits == 1) {
+            if (hits.totalHits >= 1) {
                 ScoreDoc d = hits.scoreDocs[0];
 
 
                 TermFreqVector vector = indexReader.getTermFreqVector(d.doc, LuceneStore.FIELD_DEPENDENCES);
+                for (int i = 0; i < vector.size(); i++) {
+                    StringBuilder builder = new StringBuilder();
+
+                    String[] parts = vector.getTerms()[i].split("::");
+                    builder.append(parts[1]);  // Relation
+                    builder.append("(");
+                    builder.append(parts[0]);  // Head
+                    builder.append(",");
+                    builder.append(parts[2]);  // Modifier
+                    builder.append(")");
+                    builder.append(" [");
+                    builder.append(vector.getTermFrequencies()[i]);
+                    builder.append("]");
+                    
+                    System.out.println("\t"+builder.toString());
+                }
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(LuceneExamples.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    private void prettyPrintDependencesVectorForDep(String dependences) {
+
+        System.out.println("RETRIEVE DEPENDENCES VECTOR FOR " + dependences);
+        
+        dependences = dependences.replace(":", "\\:");
+        try {
+            Query query = parserDEPENDENCES.parse(dependences);
+            
+            Query rewriten = indexSearcher.rewrite(query);
+            TopDocs hits = this.indexSearcher.search(query, 1);
+            WeightedTerm[] terms = QueryTermExtractor.getTerms(rewriten);
+            for (WeightedTerm term : terms){
+            	System.out.println(term.getTerm());
+            }
+            if (hits.totalHits >= 1) {
+                ScoreDoc d = hits.scoreDocs[0];
+                TermFreqVector vector = indexReader.getTermFreqVector(d.doc, LuceneStore.FIELD_DEPENDENCES);
+                int index = vector.indexOf(dependences);
                 for (int i = 0; i < vector.size(); i++) {
                     StringBuilder builder = new StringBuilder();
 

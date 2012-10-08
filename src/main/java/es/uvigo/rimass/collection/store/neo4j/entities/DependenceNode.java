@@ -2,10 +2,13 @@ package es.uvigo.rimass.collection.store.neo4j.entities;
 
 
 import java.util.Set;
+
 import org.neo4j.graphdb.Direction;
-//import org.neo4j.graphdb.Direction;
+import org.springframework.data.neo4j.annotation.Fetch;
+import org.springframework.data.neo4j.annotation.GraphId;
 import org.springframework.data.neo4j.annotation.NodeEntity;
 import org.springframework.data.neo4j.annotation.RelatedTo;
+import org.springframework.data.neo4j.annotation.RelatedToVia;
 
 
 /**
@@ -15,11 +18,20 @@ import org.springframework.data.neo4j.annotation.RelatedTo;
 @NodeEntity
 public class DependenceNode {
 
-    RelationNode relation;
+	@GraphId
+	private Long id;
+
+	@RelatedTo(type="WITH_RELATION", direction=Direction.OUTGOING) 
+	RelationNode relation;
+	
+	@Fetch @RelatedTo(type="STARTS_WITH", direction=Direction.OUTGOING)
     TermNode head;
-    TermNode modifier;
-    @RelatedTo(type = "CONTAINS", direction = Direction.INCOMING)
-    Set<DocumentNode> documents;
+    
+	@Fetch @RelatedTo(type="ENDS_WITH", direction=Direction.OUTGOING)
+	TermNode modifier;
+    
+    @RelatedToVia(type = "CONTAINS", direction = Direction.INCOMING)
+    Set<DocumentDependenceRelation> documents;
 
     public TermNode getHead() {
         return head;
@@ -44,4 +56,13 @@ public class DependenceNode {
     public void setRelation(RelationNode relation) {
         this.relation = relation;
     }
+    
+    public Long getId() {
+    	return id;
+    }
+    
+    public void setId(Long id) {
+    	this.id = id;
+    }
+
 }

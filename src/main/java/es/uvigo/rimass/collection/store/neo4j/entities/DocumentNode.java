@@ -1,11 +1,13 @@
 package es.uvigo.rimass.collection.store.neo4j.entities;
 
 import java.util.Set;
+
 import org.neo4j.graphdb.Direction;
 import org.springframework.data.neo4j.annotation.GraphId;
 import org.springframework.data.neo4j.annotation.Indexed;
 import org.springframework.data.neo4j.annotation.NodeEntity;
-import org.springframework.data.neo4j.annotation.RelatedTo;
+import org.springframework.data.neo4j.annotation.RelatedToVia;
+import org.springframework.data.neo4j.support.index.IndexType;
 
 /**
  *
@@ -13,16 +15,17 @@ import org.springframework.data.neo4j.annotation.RelatedTo;
  */
 @NodeEntity
 public class DocumentNode {
-    long id;
-    @Indexed
-    String title;
-    @Indexed
-    String text;
-    @RelatedTo(type = "CONTAINS", direction = Direction.OUTGOING)
-    Set<DependenceNode> dependences;
+    @GraphId Long id;
     
-    Set<TermNode> terms;
-
+    @Indexed(indexName="docTitleIndex", indexType=IndexType.FULLTEXT)
+    String title;
+    
+    @Indexed(indexName="docTextIndex", indexType=IndexType.FULLTEXT)
+    String text;
+    
+    @RelatedToVia(type = "CONTAINS", direction = Direction.OUTGOING)
+    Set<DocumentDependenceRelation> dependences;
+    
     public DocumentNode() {
     }
 
@@ -50,20 +53,12 @@ public class DocumentNode {
         this.text = text;
     }
 
-    public Set<DependenceNode> getDependences() {
+    public Set<DocumentDependenceRelation> getDependences() {
         return dependences;
     }
 
-    public void setDependences(Set<DependenceNode> dependences) {
+    public void setDependences(Set<DocumentDependenceRelation> dependences) {
         this.dependences = dependences;
-    }
-
-    public Set<TermNode> getTerms() {
-        return terms;
-    }
-
-    public void setTerms(Set<TermNode> terms) {
-        this.terms = terms;
     }
 
     void addDependence(DependenceNode dependence) {
